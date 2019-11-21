@@ -1,19 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>DogAPI</title>
-    <script src="main.js"></script>
+    <script src="js/main.js"></script>
 </head>
+
 <body>
     <select>
         <option value="Guess: Easy">Guess the Breed (Easy Mode)</option>
         <option value="Guess: Difficult">Guess the Breed (Hard Mode)</option>
         <option value="Look at Breed">Look at Photos of a Breed</option>
-      </select>
-      <p class="content"></p>
-      stuffs
+    </select>
+
+    <button onClick="loadGame()">Load Game</button>
+
+    <button onClick="getRandomImage()">Click for a random image</button><br />
+    <br />
+    <img id="dogImage" src="https://dog.ceo/img/dog-api-logo.svg">
+
+    <p class="content"></p>
+
 </body>
+
 </html>
