@@ -24,7 +24,7 @@ div#gamePoints {
 body{
     text-align: center;
 }
-button {
+button{
     background-color: #4CAF50; /* Green */
     border: none;
     color: white;
@@ -32,7 +32,10 @@ button {
     text-align: center;
     text-decoration: none;
     font-size: 16px;
-  }
+}
+#getRandomImage{
+    background-color: rgb(76, 111, 175); /* Green */
+}
 div#gamePoints {
     float: right;
     font-size: 2em;
