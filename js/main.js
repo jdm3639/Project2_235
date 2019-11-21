@@ -32,5 +32,5 @@ function getRandomImage()
 function loadGame() {
     var contentDiv = document.getElementById('content');
 
-    contentDiv.innerHTML = "Loaded!";
+    //contentDiv.innerHTML = "Loaded!";
 }
