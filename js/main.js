@@ -20,15 +20,15 @@ function getRandomImage() {
 
 
     // get the image object
-    let image = document.getElementById('dogImage');
+    let image = document.querySelector('#dogImage');
 
     // set the src of the image object
     image.src = url;
 }
 
 function contentTypeChanged() {
-    let loadContentButton = document.getElementById('LoadButton');
-    let gameModeSelect = document.getElementById('gameMode');
+    let loadContentButton = document.querySelector('#LoadButton');
+    let gameModeSelect = document.querySelector('#gameMode');
 
     if (gameModeSelect.selectedIndex == 2) {
         loadContentButton.innerHTML = "Load Breed Finder";
@@ -39,9 +39,9 @@ function contentTypeChanged() {
 }
 
 function loadContent() {
-    let contentDiv = document.getElementById('content');
+    let contentDiv = document.querySelector('#content');
 
-    let gameModeSelect = document.getElementById('gameMode');
+    let gameModeSelect = document.querySelector('#gameMode');
 
     if (gameModeSelect.selectedIndex == 2) {
         listAllBreeds();
@@ -51,11 +51,17 @@ function loadContent() {
 }
 
 function loadGame(difficultyID, round, points) {
-    let gameDisplayDiv = document.getElementById('gameDisplay');
+    let difficulty = (difficultyID == 0 ? "Easy" : "Hard");
+    let gameDisplayDiv = document.querySelector('#gameDisplay');
     gameDisplayDiv.innerHTML = "";
 
+    let highscoreDisplay = document.createTextNode("Highscore [" + difficulty + "]: ");
     if (round == 10) {
         gameDisplayDiv.innerHTML = "Game Over<br>Points: " + points + "/10";
+        let highscore = window.localStorage.getItem("highscore" + difficultyID);
+        if (highscore == null || points > highscore) {
+            window.localStorage.setItem("highscore" + difficultyID, points);
+        }
         return;
     }
 
@@ -63,8 +69,8 @@ function loadGame(difficultyID, round, points) {
     let correctImageID = Math.floor(Math.random() * imagesInRound);
     let correctDogBreed = getRandomDogBreed();
 
-    let difficulty = (difficultyID == 0 ? "Easy" : "Hard");
-    var topDisplay = document.createTextNode("Difficulty: " + difficulty);
+    
+    let topDisplay = document.createTextNode("Difficulty: " + difficulty);
     let topDisplay2 = document.createTextNode((10 - round) + " round" + ((10 - round) == 1 ? "" : "s") + " left");
     let topDisplay3 = document.createTextNode("Points: " + points + "/10");
     let topDisplay4 = document.createTextNode("Click the " + correctDogBreed.replace('/', ' ') + ".");
@@ -181,14 +187,14 @@ function listAllBreeds() {
     inner += "<button onClick=\"viewBreed(0)\">View Breed</button>"
     inner += "<br><img id=\"dogImage\" src=\"https://dog.ceo/img/dog-api-logo.svg\">"
 
-    let gameDisplayDiv = document.getElementById('gameDisplay');
+    let gameDisplayDiv = document.querySelector('#gameDisplay');
     gameDisplayDiv.innerHTML = inner;
 
 }
 
 function showSubBreedList() {
     // get selected breed
-    let breedSelect = document.getElementById('breedDropdown');
+    let breedSelect = document.querySelector('#breedDropdown');
     let breed = breedSelect.options[breedSelect.selectedIndex].value;
 
     // get list of breeds and sub breeds
@@ -196,8 +202,8 @@ function showSubBreedList() {
     let array = JSON.parse(json);
     let url = array.message;
 
-    let subBreedSelect = document.getElementById('subBreedDropdown');
-    let subBreedDropdownWithLabel= document.getElementById('subBreedDropdownWithLabel');
+    let subBreedSelect = document.querySelector('#subBreedDropdown');
+    let subBreedDropdownWithLabel= document.querySelector('#subBreedDropdownWithLabel');
     // if it has sub breeds
     if (url[breed].length > 0) {
 
@@ -216,10 +222,10 @@ function showSubBreedList() {
 function viewBreed(imageGrabAttempt) {
     // A do-while is put here to give the API 3 attepts of producing a random image that is not undefined
     do {
-        let breedSelect = document.getElementById('breedDropdown');
+        let breedSelect = document.querySelector('#breedDropdown');
 
         let subBreed = '';
-        let subBreedSelect = document.getElementById('subBreedDropdown');
+        let subBreedSelect = document.querySelector('#subBreedDropdown');
         if (subBreedSelect.style.display == "inline") {
             subBreed = '/' + subBreedSelect.options[subBreedSelect.selectedIndex].value
         }
@@ -237,7 +243,7 @@ function viewBreed(imageGrabAttempt) {
         let url = array.message;
 
         // get the image object
-        let image = document.getElementById('dogImage');
+        let image = document.querySelector('#dogImage');
 
         let selectedImage = url[Math.round(Math.random() * url.length)];
 
