@@ -175,7 +175,8 @@ function listAllBreeds() {
     }
 
     inner += "</select><br>"
-    inner += "<select id= \"subBreedDropdown\" style=\"display: none\"></select><br>"
+    //I made this a div so that I could make both the label and dropdown box invisible and visible.
+    inner += "<div id=\"subBreedDropdownWithLabel\" style=\"display: none\">Sub-breed: <select id= \"subBreedDropdown\"></select></div><br>"
 
     inner += "<button onClick=\"viewBreed(0)\">View Breed</button>"
     inner += "<br><img id=\"dogImage\" src=\"https://dog.ceo/img/dog-api-logo.svg\">"
@@ -196,6 +197,7 @@ function showSubBreedList() {
     let url = array.message;
 
     let subBreedSelect = document.getElementById('subBreedDropdown');
+    let subBreedDropdownWithLabel= document.getElementById('subBreedDropdownWithLabel');
     // if it has sub breeds
     if (url[breed].length > 0) {
 
@@ -205,10 +207,10 @@ function showSubBreedList() {
             inner += "<option value=\"" + url[breed][subBreed] + "\">" + url[breed][subBreed] + "</option>";
         }
         subBreedSelect.innerHTML = inner;
-        subBreedSelect.style.display = "inline";
+        subBreedDropdownWithLabel.style.display = "inline";
     }
     else
-        subBreedSelect.style.display = "none";
+        subBreedDropdownWithLabel.style.display = "none";
 }
 
 function viewBreed(imageGrabAttempt) {

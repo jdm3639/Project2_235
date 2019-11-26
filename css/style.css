@@ -1,7 +1,11 @@
 body {
+    text-align:center;
     margin-left: auto;
     margin-right: auto;
-    
+}
+#subBreedDropdown{
+    margin-top:10px;
+    margin-bottom:10px;
 }
 div#gamePoints {
     margin-left: 92%;
@@ -21,9 +25,6 @@ div#gamePoints {
 #gameDisplay {
     
 }
-body{
-    text-align: center;
-}
 button{
     background-color: #4CAF50; /* Green */
     border: none;
@@ -32,6 +33,7 @@ button{
     text-align: center;
     text-decoration: none;
     font-size: 16px;
+    margin-bottom:10px;
 }
 #getRandomImage{
     background-color: rgb(76, 111, 175); /* Green */
@@ -43,11 +45,6 @@ div#gamePoints {
 #dogImage {
     width: 30%;
 }
-body {
-    margin-left: auto;
-    margin-right: auto;
-}
-
 .dogGameImage {
     width: 15%;
 }
