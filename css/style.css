@@ -51,7 +51,10 @@ div#gamePoints {
 .dogGameImage {
     width: 15%;
     padding:10px;
-    border: solid black;
+    border: solid 5px black;
     margin:5px;
     vertical-align: middle;
+}
+.dogGameImage:hover{
+    border: double 5px lightgreen;
 }
