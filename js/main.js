@@ -68,14 +68,17 @@ function loadGame(difficultyID, round, points) {
     let topDisplay2 = document.createTextNode((10 - round) + " round" + ((10 - round) == 1 ? "" : "s") + " left");
     let topDisplay3 = document.createTextNode("Points: " + points + "/10");
     let topDisplay4 = document.createTextNode("Click the " + correctDogBreed.replace('/', ' ') + ".");
-    gameDisplayDiv.appendChild(topDisplay);
-    gameDisplayDiv.appendChild(document.createElement("br"));
-    gameDisplayDiv.appendChild(topDisplay2);
-    gameDisplayDiv.appendChild(document.createElement("br"));
-    gameDisplayDiv.appendChild(topDisplay3);
-    gameDisplayDiv.appendChild(document.createElement("br"));
-    gameDisplayDiv.appendChild(topDisplay4);
-    gameDisplayDiv.appendChild(document.createElement("br"));
+    let gameInfoDiv = document.createElement("div");
+    gameInfoDiv.appendChild(topDisplay);
+    gameInfoDiv.appendChild(document.createElement("br"));
+    gameInfoDiv.appendChild(topDisplay2);
+    gameInfoDiv.appendChild(document.createElement("br"));
+    gameInfoDiv.appendChild(topDisplay3);
+    gameInfoDiv.appendChild(document.createElement("br"));
+    gameInfoDiv.appendChild(topDisplay4);
+    gameInfoDiv.appendChild(document.createElement("br"));
+    gameInfoDiv.id = "gameInfo";
+    gameDisplayDiv.appendChild(gameInfoDiv);
 
     for (let i = 0; i < imagesInRound; i++) {
         let randomDogBreed = undefined;
