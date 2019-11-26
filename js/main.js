@@ -55,13 +55,20 @@ function loadGame(difficultyID, round, points) {
     let gameDisplayDiv = document.querySelector('#gameDisplay');
     gameDisplayDiv.innerHTML = "";
 
-    let highscoreDisplay = document.createTextNode("Highscore [" + difficulty + "]: ");
+    let highscore = window.localStorage.getItem("highscore" + difficultyID);
+
+    let highscoreDisplay;
+    if (highscore == null)
+        highscoreDisplay = document.createTextNode("Highscore [" + difficulty + "]: None set");
+    else
+        highscoreDisplay = document.createTextNode("Highscore [" + difficulty + "]: " + highscore);
+
+
     if (round == 10) {
         gameDisplayDiv.innerHTML = "Game Over<br>Points: " + points + "/10";
-        let highscore = window.localStorage.getItem("highscore" + difficultyID);
         if (highscore == null || points > highscore) {
             window.localStorage.setItem("highscore" + difficultyID, points);
-        }
+        } 
         return;
     }
 
@@ -71,7 +78,7 @@ function loadGame(difficultyID, round, points) {
 
     
     let topDisplay = document.createTextNode("Difficulty: " + difficulty);
-    let topDisplay2 = document.createTextNode((10 - round) + " round" + ((10 - round) == 1 ? "" : "s") + " left");
+    let topDisplay2 = document.createTextNode((10 - round) + " round" + ((10 - round) == 1 ? "" : "s") + " left ");
     let topDisplay3 = document.createTextNode("Points: " + points + "/10");
     let topDisplay4 = document.createTextNode("Click the " + correctDogBreed.replace('/', ' ') + ".");
     let gameInfoDiv = document.createElement("div");
@@ -81,10 +88,13 @@ function loadGame(difficultyID, round, points) {
     gameInfoDiv.appendChild(document.createElement("br"));
     gameInfoDiv.appendChild(topDisplay3);
     gameInfoDiv.appendChild(document.createElement("br"));
-    gameInfoDiv.appendChild(topDisplay4);
-    gameInfoDiv.appendChild(document.createElement("br"));
+    gameInfoDiv.appendChild(highscoreDisplay);
     gameInfoDiv.id = "gameInfo";
     gameDisplayDiv.appendChild(gameInfoDiv);
+    gameDisplayDiv.appendChild(document.createElement("br"));
+    gameDisplayDiv.appendChild(topDisplay4);
+    gameDisplayDiv.appendChild(document.createElement("br"));
+    gameDisplayDiv.appendChild(document.createElement("br"));
 
     for (let i = 0; i < imagesInRound; i++) {
         let randomDogBreed = undefined;
