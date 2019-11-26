@@ -26,7 +26,19 @@ function getRandomImage() {
     image.src = url;
 }
 
-function loadGame() {
+function contentTypeChanged() {
+    let loadContentButton = document.getElementById('LoadButton');
+    let gameModeSelect = document.getElementById('gameMode');
+
+    if (gameModeSelect.selectedIndex == 2) {
+        loadContentButton.innerHTML = "Load Breed Finder";
+    }
+    else {
+        loadContentButton.innerHTML = "Load Game";
+    }
+}
+
+function loadContent() {
     let contentDiv = document.getElementById('content');
 
     let gameModeSelect = document.getElementById('gameMode');
@@ -34,9 +46,116 @@ function loadGame() {
     if (gameModeSelect.selectedIndex == 2) {
         listAllBreeds();
     } else {
-        let gameDisplayDiv = document.getElementById('gameDisplay');
-        gameDisplayDiv.innerHTML = "The game is still being prototyped<br>Try the \"Look at Photos of a Breed\" option to view by breed!";
+        loadGame(gameModeSelect.selectedIndex, 0, 0)
     }
+}
+
+function loadGame(difficultyID, round, points) {
+    let gameDisplayDiv = document.getElementById('gameDisplay');
+    gameDisplayDiv.innerHTML = "";
+
+    if (round == 10) {
+        gameDisplayDiv.innerHTML = "Game Over<br>Points: " + points + "/10";
+        return;
+    }
+
+    let imagesInRound = (difficultyID == 0 ? 3 : 5);
+    let correctImageID = Math.floor(Math.random() * imagesInRound);
+    let correctDogBreed = getRandomDogBreed();
+
+    let difficulty = (difficultyID == 0 ? "Easy" : "Hard");
+    var topDisplay = document.createTextNode("Difficulty: " + difficulty);
+    let topDisplay2 = document.createTextNode((10 - round) + " round" + ((10 - round) == 1 ? "" : "s") + " left");
+    let topDisplay3 = document.createTextNode("Points: " + points + "/10");
+    let topDisplay4 = document.createTextNode("Click the " + correctDogBreed.replace('/', ' ') + ".");
+    gameDisplayDiv.appendChild(topDisplay);
+    gameDisplayDiv.appendChild(document.createElement("br"));
+    gameDisplayDiv.appendChild(topDisplay2);
+    gameDisplayDiv.appendChild(document.createElement("br"));
+    gameDisplayDiv.appendChild(topDisplay3);
+    gameDisplayDiv.appendChild(document.createElement("br"));
+    gameDisplayDiv.appendChild(topDisplay4);
+    gameDisplayDiv.appendChild(document.createElement("br"));
+
+    for (let i = 0; i < imagesInRound; i++) {
+        let randomDogBreed = undefined;
+
+        if (correctImageID != i) {
+            // to ensure their are no duplicate correct dog breeds
+            do {
+                randomDogBreed = getRandomDogBreed();
+            } while (correctDogBreed == randomDogBreed)
+        } else {
+            randomDogBreed = correctDogBreed;
+        }
+
+        // build request
+        let request = 'https://dog.ceo/api/breed/' + randomDogBreed + '/images';
+        let imageSrc = "";
+        let imageGrabAttempt = 0;
+        do {
+            // get the json from the server
+            let json = httpGet(request);
+            // decode the json into an array
+            let array = JSON.parse(json);
+            // get the image url from the array
+            let url = array.message;
+
+            let selectedImage = url[Math.round(Math.random() * url.length)];
+
+            if (selectedImage == undefined) {
+                console.log("Image not OK!");
+                imageGrabAttempt += 1;
+                console.log("Retrying, Attempt: " + imageGrabAttempt);
+            }
+            else {
+                imageGrabAttempt = -1
+                console.log("Image loaded - " + selectedImage);
+                imageSrc = selectedImage;
+            }
+        } while (imageGrabAttempt != -1 && imageGrabAttempt <= 3);
+
+
+
+        let dogImage = document.createElement("IMG");
+        dogImage.className = "dogGameImage";
+        dogImage.src = imageSrc;
+
+        if (correctImageID == i) {
+            dogImage.onclick = function () {
+                loadGame(difficultyID, round + 1, points + 1)
+            };
+        } else {
+            dogImage.onclick = function () {
+                loadGame(difficultyID, round + 1, points)
+            };
+        }
+
+        gameDisplayDiv.appendChild(dogImage);
+    }
+
+
+
+    //gameDisplayDiv.innerHTML = inner;
+}
+
+function getRandomDogBreed() {
+    let json = httpGet('https://dog.ceo/api/breeds/list/all');
+    let array = JSON.parse(json);
+    let url = array.message;
+
+    let breedID = Math.floor(Object.keys(url).length * Math.random());
+    let breedName = Object.keys(url)[breedID];
+    let subBreedID = 0;
+    if (url[breedName].length > 0) {
+        subBreedID = Math.floor(url[breedName].length * Math.random());
+    }
+
+    let subBreedName = url[breedName][subBreedID];
+    if (subBreedName != undefined)
+        return breedName + "/" + subBreedName;
+    else
+        return breedName;
 }
 
 function listAllBreeds() {
@@ -46,7 +165,7 @@ function listAllBreeds() {
 
     let url = array.message;
 
-    let inner = "<select id= \"breedDropdown\">";
+    let inner = "Breed: <select id= \"breedDropdown\" onchange=\"showSubBreedList()\">";
 
     for (let property in url) {
         if (url.hasOwnProperty(property)) {
@@ -55,9 +174,10 @@ function listAllBreeds() {
         }
     }
 
-    inner += "</select>"
+    inner += "</select><br>"
+    inner += "<select id= \"subBreedDropdown\" style=\"display: none\"></select><br>"
 
-    inner += "<button onClick=\"viewBreed()\">View Breed</button>"
+    inner += "<button onClick=\"viewBreed(0)\">View Breed</button>"
     inner += "<br><img id=\"dogImage\" src=\"https://dog.ceo/img/dog-api-logo.svg\">"
 
     let gameDisplayDiv = document.getElementById('gameDisplay');
@@ -65,26 +185,70 @@ function listAllBreeds() {
 
 }
 
-function viewBreed() {
+function showSubBreedList() {
+    // get selected breed
     let breedSelect = document.getElementById('breedDropdown');
+    let breed = breedSelect.options[breedSelect.selectedIndex].value;
 
-    let request = 'https://dog.ceo/api/breed/' + breedSelect.options[breedSelect.selectedIndex].value + '/images';
-
-    // get the json from the server
-    let json = httpGet(request);
-
-    // decode the json into an array
+    // get list of breeds and sub breeds
+    let json = httpGet('https://dog.ceo/api/breeds/list/all');
     let array = JSON.parse(json);
-
-
-    // get the image url from the array
     let url = array.message;
 
-    // get the image object
-    let image = document.getElementById('dogImage');
+    let subBreedSelect = document.getElementById('subBreedDropdown');
+    // if it has sub breeds
+    if (url[breed].length > 0) {
 
-    let selectedImage = url[Math.round(Math.random() * url.length)];
+        let inner = "";
+        for (let subBreed in url[breed]) {
+            console.log(subBreed + "");
+            inner += "<option value=\"" + url[breed][subBreed] + "\">" + url[breed][subBreed] + "</option>";
+        }
+        subBreedSelect.innerHTML = inner;
+        subBreedSelect.style.display = "inline";
+    }
+    else
+        subBreedSelect.style.display = "none";
+}
 
-    // set the src of the image object
-    image.src = selectedImage;
+function viewBreed(imageGrabAttempt) {
+    // A do-while is put here to give the API 3 attepts of producing a random image that is not undefined
+    do {
+        let breedSelect = document.getElementById('breedDropdown');
+
+        let subBreed = '';
+        let subBreedSelect = document.getElementById('subBreedDropdown');
+        if (subBreedSelect.style.display == "inline") {
+            subBreed = '/' + subBreedSelect.options[subBreedSelect.selectedIndex].value
+        }
+
+        let request = 'https://dog.ceo/api/breed/' + breedSelect.options[breedSelect.selectedIndex].value + subBreed + '/images';
+
+        // get the json from the server
+        let json = httpGet(request);
+
+        // decode the json into an array
+        let array = JSON.parse(json);
+
+
+        // get the image url from the array
+        let url = array.message;
+
+        // get the image object
+        let image = document.getElementById('dogImage');
+
+        let selectedImage = url[Math.round(Math.random() * url.length)];
+
+        if (selectedImage == undefined) {
+            console.log("Image not OK!");
+            imageGrabAttempt += 1;
+            console.log("Retrying, Attempt: " + imageGrabAttempt);
+        }
+        else {
+            imageGrabAttempt = -1
+            console.log("Image loaded - " + selectedImage);
+            image.src = selectedImage;
+        }
+    } while (imageGrabAttempt != -1 && imageGrabAttempt <= 3);
+
 }

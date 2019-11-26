@@ -13,14 +13,13 @@
 <body>
 
     <div id="content">
-        <select id="gameMode">
+        <select id="gameMode" onChange="contentTypeChanged()">
             <option value="Guess: Easy">Guess the Breed (Easy Mode)</option>
             <option value="Guess: Difficult">Guess the Breed (Hard Mode)</option>
             <option value="Look at Breed">Look at Photos of a Breed</option>
         </select>
-        <button onClick="loadGame()">Load Game</button>
-
-        <button onClick="getRandomImage()">Click for a random image</button><br />
+        <br><br>
+        <button id="LoadButton" onClick="loadContent()">Load Game</button>
         <div id="gameBar">
             <div id="gamePoints">450 Points</div>
         </div>
