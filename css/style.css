@@ -1,7 +1,5 @@
 body {
     text-align:center;
-    padding-left: auto;
-    padding-right: auto;
     font-family: 'PT Sans Narrow', sans-serif;
 }
 #subBreedDropdown{
@@ -57,4 +55,8 @@ div#gamePoints {
 }
 .dogGameImage:hover{
     border: double 5px lightgreen;
+}
+footer{
+    font-size: large;
+    font-weight: 100;
 }

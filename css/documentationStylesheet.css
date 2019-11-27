@@ -1,0 +1,10 @@
+body{
+    margin-left:17%;
+    margin-right: 17%;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: large;
+    text-align: center;
+    font-family: 'PT Sans Narrow', sans-serif;
+    border: solid lightblue;
+}
